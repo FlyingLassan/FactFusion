@@ -136,8 +136,8 @@ print(results)
 python webapp.py --api_config demo_data/api_config.yaml
 ```
 
-<p align="center"><img src="../assets/web_input.png"/></p>
-<p align="center"><img src="../assets/web_result.png"/></p>
+<p align="center"><img src="../assets/online_screenshot.png"/></p>
+<p align="center"><img src="../assets/2ndpage.PNG"/></p>
 
 ## Advanced Features
 
