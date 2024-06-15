@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FactFusion</title>
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+    <style>
+         @keyframes fadeIn{
+    0%{
+      opacity:0;
+    }
+    100%{
+      opacity:1;
+    }
+  }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* display: flex; */
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: baseline;
+            height: 100vh;
+            /* background: #f4f4f4; */
+            background-color:#fff ;
+        }
+        
+
+        
+
+        .newsenter{
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            font-size: 50px;
+
+        }
+
+        .top_margin{
+            margin-top: 0px;
+        }
+
+
+        
+        
+
+        .fact-check {
+            /* display: flex; */
+            padding: 5% 0;
+            width: 90%;
+            /* justify-content: space-between; */
+            align-items: center;
+            /* border-top: 2px solid #ccc; */
+            /* padding-top: 10%; */
+        }
+
+        .fact-check label {
+            margin-left: 10%;
+            font-size: 20px;
+        }
+
+        .fact-check textarea {
+            margin: 20px 0;
+            width: 90%;
+            height: 100%;
+            margin-left: 10%;
+            border-radius: 10px;
+            font-size: 15px;
+            border-color: #a9bee3;
+        }
+
+        .fact-check button {
+            margin-left: 80%;
+            width: 20%;
+            padding: 10px 20px;
+            background-color: #4871b7;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .fact-check button:hover {
+            background-color: #a9bee3;
+        }
+
+        footer {
+            padding: 10px;
+            width: 100%;
+            color: #333;
+            background-color: #fbfbfb;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            border: #a9bee3 solid 2px;
+        }
+
+        #timer {
+            margin-left: 80%;
+            width: 18%;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+*{
+  padding:0;
+  margin:0;
+  box-sizing:border-box;
+  font-family: Outfit;
+  scroll-behavior: smooth;
+  }
+
+body{
+  min-height:100vh;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.app{
+  width:100%;
+  margin:auto;
+
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#Button').click(function(event){
+                // Prevent the default form submission momentarily
+                // event.preventDefault();
+                
+                // Submit the form
+                $(this).closest('form').submit();
+
+                // Disable the button
+                $(this).prop('disabled', true);
+
+                 // Start an elapsed time timer
+                var timeElapsed = 0;
+                $('#timer').text('Time elapsed: ' + timeElapsed + ' seconds');
+                var timerId = setInterval(function(){
+                    timeElapsed++;
+                    $('#timer').text('Time elapsed: ' + timeElapsed + ' seconds');
+                }, 1000);
+
+            });
+        });
+    </script>
+</head>
+
+<body style="z-index: 5">
+    <div className='navbar' style="padding:20px 0px;
+    display:flex;
+    background-color: white;
+    align-items: center;">
+        <a href='./'><img src="../assets/logo.jpg" alt="" className="logo" style="cursor:pointer; width:400px"/></a>
+        <ul className="navbar-menu" style="display:flex;
+        list-style:none;
+        gap:40px;
+        color:#49557e;
+        font-size:30px;
+        margin-left: 250px;">
+          <li style="cursor:pointer;"><a href="/">Home</a></li>
+          <li style="cursor:pointer;"><a href="#aboutus">About Us</a></li>
+          <li style="cursor:pointer;"><a href="#footer">Contact Us</a></li>
+        </ul>
+        <div className="navbar-right" style="display:flex;
+        gap:40px;
+        align-items:center;">
+
+        </div>
+      </div>
+      <hr style="width:100%;
+      height:2px;
+      background-color:grey;
+      border:none;"/>
+    <div class="gridcontainer" >
+      <div style="display: grid; grid-template-columns: 3fr 1fr;">
+    <div className='headerabcd' style="height:34vw;
+    margin:30px auto;
+    background-image: url('../assets/header_img.jpg');
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 900px;
+    align-items: center;
+    margin-left: 30px;;
+    position: relative;">
+        <div className="header-contents3" style="position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap:1.5vw;
+        max-width: 50%;
+        bottom:10%;
+        left:3vw;
+        animation:fadeIn 3s;">
+          <h2 style="font-weight:500;
+          color:white;
+          -webkit-text-stroke-width: 1px;
+          -webkit-text-stroke-color: yellow;
+          font-size: max(4.5vw,22px);">Steer clear of Fake News</h2>
+          <p style="color:white;
+    font-size:1vw;">We aim to provide you with the most accurate information and help you avoid fake news.</p>
+          <a href='#searchbar'><button class="buttonabcde"style=" border:none;
+            color:#747474;
+            font-weight:500;
+            padding:1vw 2.3vw;
+            background-color:white;
+            font-size:max(1vw, 13px);
+            border-radius:50px;
+            cursor:pointer;">Verify a news</button></a>
+        </div>
+      </div>
+      <div style="margin:30px; width: 400px; align-items: center;">
+        <div  class="card" style="display: flex; flex-direction: column; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s; border-radius: 10px; outline: thin solid  burlywood; overflow-y:auto; height:600px">
+          <div style="padding: 20px 0px;">
+            <h2 style="display: flex; align-items: center; justify-content: center; color:#49557e;"><a href="https://news.google.com/home?hl=en-IN&gl=IN&ceid=IN:en" target="_blank"> HEADLINES </a></h2>
+          </div>
+
+          <hr style="height:5px;background-color: #323232;"/>
+
+          <div class="newsabcd"style="padding: 20px 0px;">
+            <p id="title"> </p>
+          </div>
+          
+        </div>
+    </div>
+    </div>
+
+    <main class="fact-check" id="searchbar"  style="animation:fadeIn 3s;" >
+        <form method="post" action="/">
+            <label for="response" class="newsenter" style="color:black;
+    font-size:1.5vw;">Please enter the news that you want to fact-check</label><br>
+            <textarea id="response" name="response" rows="4" cols="50"
+                placeholder="Please type here..." style="font-size: 25px;"></textarea><br>
+            <button id="Button" type="submit" style="background:transparent;
+            font-size:16px;
+            color:#49557e;
+            border:3px solid tomato;
+            padding:15px 40px;
+            border-radius:50px;
+            cursor:pointer;
+            transition:0.3s;
+            ">Submit</button>
+        </form>
+        <p id="timer"></p>
+    </main>
+
+
+    <div className='aboutus' id='aboutus' style="margin-bottom: 70px;
+    animation:fadeIn 3s;">
+        <div className="about-us" style="max-width: 1500px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: left;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #333;
+    margin-bottom: 20px;
+    font-size: 60px;">About Us</h2>
+        <p style="color: #666;
+        font-size: 25px;
+    line-height: 1.6;">
+        Welcome to FactChecker, your trusted source for verifying news and claims. We provide accurate, unbiased analysis to help you distinguish fact from fiction, ensuring you stay informed with credible information in today's fast-paced digital world.
+        </p>
+        <section>
+          <h3 style="color: #555;
+          font-size: 40px;
+    margin-top: 20px;">Our Mission</h3>
+          <p style="color: #666;
+          font-size: 25px;
+    line-height: 1.6;">
+            Our mission is to provide high-quality fact checked information to you to prevent spread of any false news in this era of misinformation.
+          </p>
+        </section>
+        <section>
+          <h3 style="color: #555;
+          font-size: 40px;
+    margin-top: 20px;">Our Team</h3>
+          <p style="color: #666;
+          font-size: 25px;
+    line-height: 1.6;">
+            We are a team of two undergraduate students who are currently pursuing Bachelor Of Technology from IIT(ISM) Dhanbad.
+          </p>
+        </section>
+        <section>
+          <h3 style="color: #555;
+          font-size: 40px;
+    margin-top: 20px;">Contact Us</h3>
+          <p style="color: #666;
+          font-size: 25px;
+    line-height: 1.6;">
+            If you have any questions or would like to report some false information in our website, please do not hesitate to
+            contact us.
+          </p>
+        </section>
+      </div>
+        
+      </div>
+
+
+
+
+    <div className='footer' id='footer' style="color:#d9d9d9;
+    background-color: #323232;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    font-size: 25px;
+    gap:20px;
+    padding:20px 8vw;
+    padding-top: 40px;">
+        <div className="footer-content" style="width:100%;
+        display:grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap:80px;">
+            <div className="footer-content-left" style="display:flex;
+            flex-direction: column;
+            align-items: start;
+            gap:20px;">
+                <a href='./'><img src="../assets/logo.jpg" alt="" className="logo" style="cursor:pointer; width:300px"/></a>
+                <p>Welcome to FactFusion, your trusted source for verifying news and claims. We provide accurate, unbiased analysis to help you distinguish fact from fiction, ensuring you stay informed with credible information in today's fast-paced digital world.</p>
+            </div>
+            <div className="footer-content-center" style="display:flex;
+            flex-direction: column;
+            align-items: start;
+            gap:20px;">
+                <h2 style="color:white;">FactFusion</h2>
+                <ul>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href='./'>Home</a></li>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href='#aboutus'>About Us</a></li>
+
+                </ul>
+
+            </div>
+            <div className="footer-content-right" style="display:flex;
+            flex-direction: column;
+            align-items: start;
+            gap:20px;">
+                <h2 style="color:white;">Contact Us</h2>
+                <ul>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href= "mailto: 22je0050@iitism.ac.in"> 22je0005@iitism.ac.in</a></li>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href= "mailto: 22je0686@iitism.ac.in"> 22je0686@iitism.ac.in</a></li>
+                </ul>
+            </div>
+            
+        </div>
+        <hr style="width:100%;
+        height:2px;
+        margin:10px 0px;
+        background-color:grey;
+        border:none;"/>
+        <p className="footer-copyright">Copyright© 2024 FactFusion</p>
+      
+    </div>
+
+
+
+    <script>
+      fetch("https://newsapi.org/v2/top-headlines?country=in&apiKey=97e4becf78e745ce85388c5faf0ea3cd")
+      .then(response=>response.json())
+      .then(data=>{
+        for(var i=0; i<data["articles"].length;i++){
+          var cardDiv=document.createElement("div")
+         // cardDiv.setAttribute("class",)
+         cardDiv.innerHTML=
+         `<div class ="abcd" style="padding: 20px 0px;"> <p  class="title_of_news" id="title" style="margin-left:5px; margin-right:5px font-weight:bold "><a href="${data["articles"][i]["url"]}"  target="_blank" > ${data["articles"][i]["title"]}</a></p></div><hr style="height:2px"/>`
+          //document.getElementById("title").innerText=data["articles"][i]["title"]
+          document.getElementsByClassName("newsabcd")[0].appendChild(cardDiv)
+        }
+        console.log(data)
+      })
+
+
+    
+    </script>
+
+</body>
+
+</html>

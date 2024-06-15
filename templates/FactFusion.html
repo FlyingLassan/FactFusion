@@ -1,0 +1,463 @@
+
+<!DOCTYPE html >
+<html lang="en" data-bs-theme="light" style="background-color: white;">
+<head>
+	<meta charset="utf-8">
+	<title>FactFusion</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* display: flex; */
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: baseline;
+            height: 100vh;
+            /* background: #f4f4f4; */
+        }
+        .newsenter{
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            font-size: 50px;
+
+        }
+        *{
+  font-family: Outfit;
+  scroll-behavior: smooth;
+  }
+
+
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+        </style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<!-- ================== BEGIN core-css ================== -->
+    <link href="{{ url_for('static', filename='css/vendor.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/app.min.css') }}" rel="stylesheet">
+    <!-- <link href="assets/css/vendor.min.css" rel="stylesheet"> -->
+	<!-- <link href="assets/css/app.min.css" rel="stylesheet"> -->
+	<!-- ================== END core-css ================== -->
+	
+	<!-- ================== BEGIN page-css ================== -->
+	<!-- <link href="assets/css/factcheck.css" rel="stylesheet"> -->
+    <link href="{{ url_for('static', filename='css/factcheck.css') }}" rel="stylesheet">
+	<!-- ================== END page-css ================== -->
+
+</head>
+<body>
+<body class="theme-gray-100" style="background-color:#fff ;">
+
+	<!-- BEGIN #app -->
+	<div id="app" class="app app-without-sidebar" >
+        <!-- BEGIN #header -->
+		<div className='navbar' style="padding-top: 20px;
+    display:flex;
+    background-color: white;
+    align-items: center;">
+        <a href='./'><img src="../assets/logo.jpg" alt="" className="logo" style="cursor:pointer; width:400px"/></a>
+        <ul className="navbar-menu" style="display:flex;
+        list-style:none;
+        gap:40px;
+        color:#49557e;
+        font-size:30px;
+        margin-left: 250px;">
+          <li style="cursor:pointer;"><a href="/" style="color: #333; text-decoration: none;">Home</a></li>
+          <li style="cursor:pointer;"><a href="/#aboutus" style="color: #333; text-decoration: none;">About Us</a></li>
+          <li style="cursor:pointer;"><a href="/#footer" style="color: #333; text-decoration: none;">Contact Us</a></li>
+        </ul>
+        <div className="navbar-right" style="display:flex;
+        gap:40px;
+        align-items:center;">
+
+        </div>
+      </div>
+      <hr style="width:100%;
+      height:2px;
+      background-color:grey;
+      border:none;"/>
+		<!-- END #header -->
+
+		<!-- BEGIN #content -->
+		<div id="content" class="app-content" >
+			<ul class="breadcrumb">
+			</ul>
+            <div class="row">
+                <div class="col-xl-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                <!-- for statement -->
+                                {% for claim_detail in responses['claim_detail'] %}
+                                    <sup>{{ loop.index }}</sup>
+                                    {% if claim_detail['factuality'] == 0 %}
+                                        <span style="font-size:15px ;" class="refutes-span" onclick="switchClaim({{ loop.index }})">
+                                    {% elif claim_detail['factuality'] == 1 %}
+                                        <span style="font-size:15px ;" class="support-span" onclick="switchClaim({{ loop.index }})">
+                                    {% elif claim_detail['factuality'] == 'Nothing to check' %}
+                                        <span style="font-size:15px ;" class="support-span">
+                                    {% elif claim_detail['factuality'] == 'No evidence found' %}
+                                        <span style="font-size:15px ;" class="support-span">
+                                    {% else %}
+                                        <span style="font-size:15px ;" class="controversial-span" onclick="switchClaim({{ loop.index }})">
+                                    {% endif %}
+                                        <span style="font-size:15px ;" class="fs-4">
+                                            {{claim_detail['origin_text']}}
+                                        </span>
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>
+                                <strong style="font-size:25px ;">Claim:&nbsp;</strong><p style="font-size: 15px;"> {{ responses['claim_detail'][shown_claim]["claim"] }}</p>
+                            </h6>
+                            <h6 class="card-title" style="font-size: 25px;">
+                                Evidences: <span class="badge bg-danger">{{ responses['claim_detail'][shown_claim]["evidences"] | length }}</span>
+                            </h6>
+                        </div>
+                        <div class="card-body" style="display: flex; justify-content: space-evenly;">
+                            <ul class="nav nav-pills mb-3" id="pills-tab" style="gap:90px">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-refutes-tab" data-bs-toggle="pill" href="#pills-refutes">
+                                        <p style="font-size:15px;" class="text-danger">CLAIMS FALSE ({{ responses['claim_detail'][shown_claim]["evidences"] | count_occurrences("REFUTES", "relationship") }})</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-contextualizes-tab" data-bs-toggle="pill" href="#pills-contextualizes">
+                                        <p style="font-size:15px;" class="text-warning">MISREPRESENTS ({{ responses['claim_detail'][shown_claim]["evidences"] | count_occurrences("IRRELEVANT", "relationship") }})</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-supports-tab" data-bs-toggle="pill" href="#pills-supports">
+                                        <p style="font-size:15px;"  class="text-success">CLAIMS TRUE ({{ responses['claim_detail'][shown_claim]["evidences"] | count_occurrences("SUPPORTS", "relationship") }})</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-refutes">
+                                    <div class="accordion" id="accordionRefutes">
+                                        {% for evi in responses['claim_detail'][shown_claim]["evidences"] | filter_evidences("REFUTES", "relationship")  %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="headingRef{{ loop.index }}">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRefutes{{ loop.index }}">
+                                                    <p class="text-danger" style="font-size: 12px;">
+                                                        REFUTES - {{ loop.index }}
+                                                    </p>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseRefutes{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionRefutes">
+                                                <div class="accordion-body">
+                                                    <p><strong >Evidence:&nbsp;</strong>{{ evi["text"] }}</p>
+                                                    <p><strong >Source:&nbsp;</strong>
+                                                        <span class="evidence-text pre-wrap">{{evi.url}}</span>
+                                                    </p>
+                                                    <p><strong >Reasoning:&nbsp;</strong>{{evi.reasoning}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-contextualizes">
+                                    <div class="accordion" id="accordionContextualizes">
+                                        {% for evi in responses['claim_detail'][shown_claim]["evidences"] | filter_evidences("IRRELEVANT", "relationship")  %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="headingContext{{ loop.index }}">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContextualizes{{ loop.index }}">
+                                                    <p class="text-warning" style="font-size: 12px;">
+                                                        MISREPRESENTS - {{ loop.index }}
+                                                    </p>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseContextualizes{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionContextualizes">
+                                                <div class="accordion-body">
+                                                    <p><strong>Evidence:&nbsp;</strong>{{ evi["text"] }}</p>
+                                                    <p><strong>Source:&nbsp;</strong>
+                                                        <span class="evidence-text pre-wrap">{{evi.url}}</span>
+                                                    </p>
+                                                    <p><strong>Reasoning:&nbsp;</strong>{{evi.reasoning}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="pills-supports">
+                                    <div class="accordion" id="accordionSupports">
+                                        {% for evi in responses['claim_detail'][shown_claim]["evidences"] | filter_evidences("SUPPORTS", "relationship")  %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="headingSupport{{ loop.index }}">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSupports{{ loop.index }}">
+                                                    <p class="text-success" style="font-size: 12px;">
+                                                        SUPPORTS - {{ loop.index }}
+                                                    </p>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseSupports{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionSupports">
+                                                <div class="accordion-body">
+                                                    <p><strong>Evidence:&nbsp;</strong>{{ evi["text"] }}</p>
+                                                    <p><strong>Source:&nbsp;</strong>
+                                                        <span class="evidence-text pre-wrap">{{evi.url}}</span>
+                                                    </p>
+                                                    <p><strong>Reasoning:&nbsp;</strong>{{evi.reasoning}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card m-1">
+                                <div class="card-header">
+                                    <h6 class="card-title" style="font-size: 25px;">
+                                        Overall Factuality
+                                    </h6>
+                                </div>
+                                <div class="card-body" style="font-size:25px">
+                                    {{ 100 * responses["summary"]["factuality"] }}%
+                                </div>
+                                <div class="card-arrow">
+                                    <div class="card-arrow-top-left"></div>
+                                    <div class="card-arrow-top-right"></div>
+                                    <div class="card-arrow-bottom-left"></div>
+                                    <div class="card-arrow-bottom-right"></div>
+                                </div>
+                            </div>
+                            <div class="card m-1">
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            
+                                            <div><h7 style="font-size: 20px;">Detected Claims</h7></div>
+                                            <div>
+                                                <h6>
+                                                    <p class="text-success-emphasis"  style="margin-top: 10px; font-size: 20px;">{{ responses["summary"]["num_claims"] }}</p>
+                                                </h6>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div><h7 style="font-size: 20px;">Well Supported</h7></div>
+                                            <div>
+                                                <h6>
+                                                    <p class="text-success-emphasis"  style="margin-top: 10px; font-size: 20px;">{{ responses["summary"]["num_supported_claims"] }}</p>
+                                                </h6>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div><h7 style="font-size: 20px;">Conflicted</h7></div>
+                                            <div>
+                                                <h6>
+                                                    <p class="text-danger-emphasis" style="margin-top: 10px; font-size: 20px;">{{ responses["summary"]["num_refuted_claims"] }}</p>
+                                                </h6>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div><h7 style="font-size: 20px;">Controversial</h7></div>
+                                            <div>
+                                                <h6>
+                                                    <p class="text-warning" style="margin-top: 10px; font-size: 20px;">{{ responses["summary"]["num_controversial_claims"] }}</p>
+                                                </h6>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-arrow">
+                                    <div class="card-arrow-top-left"></div>
+                                    <div class="card-arrow-top-right"></div>
+                                    <div class="card-arrow-bottom-left"></div>
+                                    <div class="card-arrow-bottom-right"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <div class="card-arrow-top-left"></div>
+                            <div class="card-arrow-top-right"></div>
+                            <div class="card-arrow-bottom-left"></div>
+                            <div class="card-arrow-bottom-right"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        <div style="background-color: #fff;">
+            <div className='aboutus' id='aboutus' style="margin-bottom: 70px;
+    animation:fadeIn 2s;
+    margin-top:250px ;">
+        <div className="about-us" style="max-width: 1500px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: left;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #333;
+    margin-bottom: 20px;
+    font-size: 60px;">About Us</h2>
+        <p style="color: #666;
+        font-size: 25px;
+    line-height: 1.6;">
+        Welcome to FactChecker, your trusted source for verifying news and claims. We provide accurate, unbiased analysis to help you distinguish fact from fiction, ensuring you stay informed with credible information in today's fast-paced digital world.
+        </p>
+        <section>
+          <h3 style="color: #555;
+          font-size: 40px;
+    margin-top: 20px;">Our Mission</h3>
+          <p style="color: #666;
+          font-size: 25px;
+    line-height: 1.6;">
+            Our mission is to provide high-quality fact checked information to you to prevent spread of any false news in this era of misinformation.
+          </p>
+        </section>
+        <section>
+          <h3 style="color: #555;
+          font-size: 40px;
+    margin-top: 20px;">Our Team</h3>
+          <p style="color: #666;
+          font-size: 25px;
+    line-height: 1.6;">
+            We are a team of two undergraduate students who are currently pursuing Bachelor Of Technology from IIT(ISM) Dhanbad.
+          </p>
+        </section>
+        <section>
+          <h3 style="color: #555;
+          font-size: 40px;
+    margin-top: 20px;">Contact Us</h3>
+          <p style="color: #666;
+          font-size: 25px;
+    line-height: 1.6;">
+            If you have any questions or would like to report some false information in our website, please do not hesitate to
+            contact us.
+          </p>
+        </section>
+      </div>
+        
+      </div>
+      </div>
+
+<div style="background-color: #fff;">
+            <div className='footer' id='footer' style="color:#d9d9d9;
+    background-color: #323232;;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    font-size: 25px;
+    gap:20px;
+    padding:20px 8vw;
+    padding-top: 80px;">
+        <div className="footer-content" style="width:100%;
+        display:grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap:80px;">
+            <div className="footer-content-left" style="display:flex;
+            flex-direction: column;
+            align-items: start;
+            gap:20px;">
+                <a href='./'><img src="../assets/logo.jpg" alt="" className="logo" style="cursor:pointer; width:300px"/></a>
+                <p>Welcome to FactFusion, your trusted source for verifying news and claims. We provide accurate, unbiased analysis to help you distinguish fact from fiction, ensuring you stay informed with credible information in today's fast-paced digital world.</p>
+            </div>
+            <div className="footer-content-center" style="display:flex;
+            flex-direction: column;
+            align-items: start;
+            gap:20px;">
+                <h2 style="color:white;">FactFusion</h2>
+                <ul>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href='./' style="text-decoration: none;">Home</a></li>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href='#aboutus' style="text-decoration: none;">About Us</a></li>
+
+                </ul>
+
+            </div>
+            <div className="footer-content-right" style="display:flex;
+            flex-direction: column;
+            align-items: start;
+            gap:20px;">
+                <h2 style="color:white;">Contact Us</h2>
+                <ul>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href= "mailto: 22je0050@iitism.ac.in" style="text-decoration: none;"> 22je0005@iitism.ac.in</a></li>
+                    <li style="list-style: none;
+    margin-bottom: 10px;"><a href= "mailto: 22je0686@iitism.ac.in" style="text-decoration: none;"> 22je0686@iitism.ac.in</a></li>
+                </ul>
+            </div>
+            
+        </div>
+        <hr style="width:100%;
+        height:2px;
+        margin:20px 0px;
+        background-color:grey;
+        border:none;"/>
+        <p className="footer-copyright">Copyright© 2024 FactFusion</p>
+      
+    </div>
+</div>
+
+
+		</div>
+		<!-- END #content -->
+		<!-- BEGIN btn-scroll-top -->
+		
+		<!-- END btn-scroll-top -->
+		
+	</div>
+	<!-- END #app -->
+	<script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+          document.querySelectorAll('.evidence-text').forEach((element) => {
+            element.innerHTML = convertUrlsToLinks(element.innerHTML)
+          })
+        })
+        function convertUrlsToLinks (text) {
+          const urlPattern = /(\bhttps?:\/\/[^\s]+)/g
+          return text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>')
+        }
+        function switchClaim (id) {
+          window.location.href = "/shownClaim/"+id;
+        }
+    </script>
+	<!-- ================== BEGIN core-js ================== -->
+	<!-- <script src="assets/js/vendor.min.js"></script> -->
+	<!-- <script src="assets/js/app.min.js"></script> -->
+    <script src="{{ url_for('static', filename='/js/vendor.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='/js/app.min.js') }}"></script>
+	<!-- ================== END core-js ================== -->
+	
+	
+</body>
+</html>
